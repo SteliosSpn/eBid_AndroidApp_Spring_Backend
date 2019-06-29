@@ -29,6 +29,8 @@ public class Auctions {
 	private String auctioneer;
 	private Double start_bid;
 	private Double current_bid;
+	private String highest_bidder;
+	private boolean checked;
 	@Transient
 	private List<String> tags;
 	public Integer getAuction_id() {
@@ -72,6 +74,18 @@ public class Auctions {
 	}
 	public void setTags(List<String> tags) {
 		this.tags = tags;
+	}
+	public String getHighest_bidder() {
+		return highest_bidder;
+	}
+	public void setHighest_bidder(String highest_bidder) {
+		this.highest_bidder = highest_bidder;
+	}
+	public boolean getChecked() {
+		return checked;
+	}
+	public void setChecked(boolean checked) {
+		this.checked = checked;
 	}
 	
 }

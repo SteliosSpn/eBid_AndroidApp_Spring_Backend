@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.eBid.models.Auctions;
 import com.eBid.models.ItemPics;
 import com.eBid.models.Items;
 import com.eBid.models.Users;
@@ -107,7 +108,7 @@ public class ItemsController {
 	}
 	
 	@RequestMapping(value = "/add_pictures", method = RequestMethod.POST)
-	public String createNewItem(@RequestParam(value="file")MultipartFile[]files) {
+	public Auctions createNewItem(@RequestParam(value="file")MultipartFile[]files) {
 
 		ItemPics picture=new ItemPics();
 		picture.setItem_id(itemsRepo.lastItemId());
@@ -123,12 +124,12 @@ public class ItemsController {
 
 	        } catch (IOException e) {
 	            e.printStackTrace();
-	            return "Error with images";
+	        
 	        }
+		Auctions auction = new Auctions();
+		auction.setName("success");;
 		
-		
-		
-		return "Item Created";
+		return auction;
 	}
 	
 	@RequestMapping(value = "/get_item_pics/{item_id}/{pic_num}", method = RequestMethod.GET,produces =MediaType.IMAGE_PNG_VALUE)
@@ -154,7 +155,7 @@ public class ItemsController {
 	}	
 	
 	@RequestMapping(value = "/get_auction_items/{auction_id}", method = RequestMethod.GET)
-	public  List <Items> getItem(@PathVariable("auction_id") Integer auction_id) {
+	public  ArrayList <Items> getItem(@PathVariable("auction_id") Integer auction_id) {
 		ArrayList <Items> items = new ArrayList<>();
 		ArrayList <Integer> items_id = itemsRepo.findItemsOfAuction(auction_id);
 		for(Integer item:items_id) {

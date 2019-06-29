@@ -1,5 +1,6 @@
 package com.eBid.repositories;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +22,15 @@ public interface AuctionsRepository extends JpaRepository<Auctions,Integer> {
 	   public ArrayList<Integer> findMyAuctions(@Param("auctioneer") String auctioneer);
 	 
 	 @Query("SELECT auction_id  FROM Auctions WHERE auctioneer=:auctioneer AND auction_id=:auction_id")
-	  
-	 public Integer check_aunction_ownership(@Param("auctioneer") String auctioneer,@Param("auction_id") Integer auction_id );
+	  public Integer check_aunction_ownership(@Param("auctioneer") String auctioneer,@Param("auction_id") Integer auction_id );
+	 
 	   @Query("SELECT auction_id FROM Auctions WHERE ends>now() or starts is NULL")
 	   public  List<Integer> findactiveauctions();
+	   
+	   @Query("SELECT a FROM Auctions a WHERE ends<:time AND checked=FALSE")
+	   public ArrayList<Auctions> findFinishedAuctions(@Param("time") Timestamp time);
+	   
+	   
 	
 	 
 }

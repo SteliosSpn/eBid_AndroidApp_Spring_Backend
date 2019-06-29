@@ -126,19 +126,24 @@ public class AuctionsController {
     "content-type=application/json" },consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
 	public Auctions createAuction(@RequestBody Auctions auction) {
 		auction.setCurrent_bid(0.0);
+		auction.setChecked(false);
+		//auction.setHighest_bidder("kostas");
+		//auction.setEnds(new Timestamp(System.currentTimeMillis()));
 		auctionRepo.save(auction);
+		if(auction.getTags().isEmpty()){}
+		else {
 		for(String tag:auction.getTags()) {
 			AuctionTags tags = new AuctionTags();
 			tags.setAuction_id(auctionRepo.lastAuctionId());
 			tags.setTag(tag);
 			System.out.println(tags.getTag());
 			auctionTagsRepo.save(tags);
-		}
+		}}
 	    Auctions returnAuction = new Auctions();
 	    returnAuction.setAuction_id(auctionRepo.lastAuctionId());
 		return returnAuction;
 	}
-	
+	/*
 	@RequestMapping(value = "/create_auction_tags",headers = {
     "content-type=application/json" },consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
 	public String createAuctionTags(@RequestBody List<AuctionTags> tags) {
@@ -151,7 +156,7 @@ public class AuctionsController {
 		}
 		
 		return "Success";
-	}
+	}*/
 	
 	@RequestMapping(value = "/my_auctions/{user_id}", method = RequestMethod.GET)
 	public ArrayList<Auctions> getMyAuctions(@PathVariable("user_id") String user_id){
