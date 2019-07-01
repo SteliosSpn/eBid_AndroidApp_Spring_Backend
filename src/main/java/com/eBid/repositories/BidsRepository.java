@@ -18,4 +18,7 @@ public interface BidsRepository extends JpaRepository<Bids,Bids> {
 
 	@Query("SELECT  bid from Bids where auction_id=:auction_id")
 	public ArrayList<Double> getaunctionbid(@Param("auction_id") Integer auction_id);
+	
+	@Query("SELECT  auction_id from Bids where bidder_id=:bidder_id")
+	public ArrayList<Integer> getAuctionsOfBidder(@Param("bidder_id") String bidder_id);
 }

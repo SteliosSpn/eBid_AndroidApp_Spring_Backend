@@ -1,10 +1,13 @@
 package com.eBid.models;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="items")
@@ -25,6 +28,12 @@ public class Items {
 	private String country;
 	private Double latitude;
 	private Double longitude;
+	@Transient 
+	private List<byte[]>pictures;
+	@Transient
+	private List<String> tags;
+	@Transient
+	private Integer rec_score;
 	
 	public Integer getItem_id() {
 		return item_id;
@@ -62,5 +71,24 @@ public class Items {
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
 	}
+	public List<byte[]> getPictures() {
+		return pictures;
+	}
+	public void setPictures(List<byte[]> pictures) {
+		this.pictures = pictures;
+	}
+	public List<String> getTags() {
+		return tags;
+	}
+	public void setTags(List<String> tags) {
+		this.tags = tags;
+	}
+	public Integer getRec_score() {
+		return rec_score;
+	}
+	public void setRec_score(Integer rec_score) {
+		this.rec_score = rec_score;
+	}
+	
 	
 }

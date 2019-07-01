@@ -75,6 +75,7 @@ public class AuthController {
         }
 		
 		else {
+			user.setInboxcount(0);
             userDetailsServiceImpl.createUser(user);
             return "Registration Successful";
         }

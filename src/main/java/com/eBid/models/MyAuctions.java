@@ -3,27 +3,10 @@ package com.eBid.models;
 import java.sql.Timestamp;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+public class MyAuctions {
 
-@Entity
-@Table(name="auctions")
-public class Auctions {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer auction_id;
 	private String name;
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
 	private Timestamp starts;
 	private Timestamp ends;
 	private String auctioneer;
@@ -31,13 +14,20 @@ public class Auctions {
 	private Double current_bid;
 	private String highest_bidder;
 	private boolean checked;
-	@Transient
-	private List<String> tags;
+	private List<String>tags;
+	private List<Items>items;
+	
 	public Integer getAuction_id() {
 		return auction_id;
 	}
 	public void setAuction_id(Integer auction_id) {
 		this.auction_id = auction_id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	public Timestamp getStarts() {
 		return starts;
@@ -69,25 +59,31 @@ public class Auctions {
 	public void setCurrent_bid(Double current_bid) {
 		this.current_bid = current_bid;
 	}
-	public List<String> getTags() {
-		return tags;
-	}
-	public void setTags(List<String> tags) {
-		this.tags = tags;
-	}
 	public String getHighest_bidder() {
 		return highest_bidder;
 	}
 	public void setHighest_bidder(String highest_bidder) {
 		this.highest_bidder = highest_bidder;
 	}
-	public boolean getChecked() {
+	public boolean isChecked() {
 		return checked;
 	}
 	public void setChecked(boolean checked) {
 		this.checked = checked;
 	}
-	
+	public List<String> getTags() {
+		return tags;
+	}
+	public void setTags(List<String> tags) {
+		this.tags = tags;
+	}
+	public List<Items> getItems() {
+		return items;
+	}
+	public void setItems(List<Items> items) {
+		this.items = items;
+	}
 
+	
 	
 }

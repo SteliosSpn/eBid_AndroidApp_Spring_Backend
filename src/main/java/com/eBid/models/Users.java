@@ -34,6 +34,7 @@ public class Users implements Serializable{
     private String city;
     private String telephone;
     private String address;
+    private Integer inboxcount;
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "USER_ROLES", joinColumns={
@@ -130,6 +131,12 @@ public class Users implements Serializable{
 	}
 	public void setAddress(String address) {
 		this.address = address;
+	}
+	public Integer getInboxcount() {
+		return inboxcount;
+	}
+	public void setInboxcount(Integer inboxcount) {
+		this.inboxcount = inboxcount;
 	}
 	
 	

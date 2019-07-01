@@ -13,10 +13,21 @@ public class TaskSchedulerService {
 	
 	@Autowired
 	private AsyncCompletedAuctionService asyncService;
-
+	//changes
+	@Autowired
+	private AsyncMessageNotificationService asyncmsgservice;
 	@Scheduled(fixedDelay=60000)
 	public void scheduleCompletedAuctionsScan() {
 		    asyncService.checkDB();
 		    
 	}
+	//changes
+	@Scheduled(fixedDelay=60000)
+	public void UpdateMessageNotifications() {
+		asyncmsgservice.checkInbox();
+		    
+	}
+	
+	
+	
 }

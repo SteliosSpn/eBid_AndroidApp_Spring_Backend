@@ -19,12 +19,14 @@ import com.eBid.models.Auctions;
 import com.eBid.models.ItemPics;
 import com.eBid.models.Item_Pic_List;
 import com.eBid.models.Items;
+import com.eBid.models.MyAuctions;
 import com.eBid.models.ShowAuctions;
 import com.eBid.models.Users;
 import com.eBid.repositories.AuctionTagsRepository;
 import com.eBid.repositories.AuctionsRepository;
 import com.eBid.repositories.BidsRepository;
 import com.eBid.repositories.ItemPicsRepository;
+import com.eBid.repositories.ItemTagsRepository;
 import com.eBid.repositories.ItemsRepository;
 
 @RestController
@@ -42,9 +44,13 @@ public class AuctionsController {
 	
 	@Autowired
 	private ItemsRepository itemsRepo;
-
 	
-	@Autowired AuctionTagsRepository auctionTagsRepo;
+    @Autowired 
+	private AuctionTagsRepository auctionTagsRepo;
+    
+    @Autowired
+    private ItemTagsRepository itemTagsRepo;
+    
 	/*
     @RequestMapping(value = "/create_auction/{user_id}/{start_bid}/{starts}/{ends}/{items}/{tags}", method = RequestMethod.POST)
 	public String createAuction(@PathVariable("user_id") String user_id,@PathVariable("start_bid") Double start_bid,
@@ -159,7 +165,7 @@ public class AuctionsController {
 	}*/
 	
 	@RequestMapping(value = "/my_auctions/{user_id}", method = RequestMethod.GET)
-	public ArrayList<Auctions> getMyAuctions(@PathVariable("user_id") String user_id){
+	public ArrayList<MyAuctions> getMyAuctions(@PathVariable("user_id") String user_id){
 		ArrayList<Auctions> auctions=new ArrayList<>();
 		ArrayList <Integer> auctions_ids=auctionRepo.findMyAuctions(user_id);
 		for(Integer auction:auctions_ids) {
@@ -168,8 +174,33 @@ public class AuctionsController {
 				auctions.add(opt.get());
 			}
 		}
+		ArrayList<MyAuctions> myauctions=new ArrayList<>();
 		//auctions.addAll(auctionRepo.findMyAuctions(user_id));
-		return auctions;
+		for(Auctions auction:auctions) {
+            MyAuctions oneAuction=new MyAuctions();
+            oneAuction.setAuction_id(auction.getAuction_id());
+            oneAuction.setName(auction.getName());
+            oneAuction.setStarts(auction.getStarts());
+            oneAuction.setEnds(auction.getEnds());
+            oneAuction.setAuctioneer(user_id);
+            oneAuction.setStart_bid(auction.getStart_bid());
+            oneAuction.setCurrent_bid(auction.getCurrent_bid());
+            oneAuction.setHighest_bidder(auction.getHighest_bidder());
+			ArrayList <Items> items = new ArrayList<>();
+			ArrayList <Integer> items_id = itemsRepo.findItemsOfAuction(auction.getAuction_id());
+			for(Integer item:items_id) {
+				Optional <Items> opt = itemsRepo.findById(item);
+				if(opt.isPresent())items.add(opt.get());
+			}
+			for(Items item:items) {
+				item.setPictures(picsRepo.findByItemId(item.getItem_id()));
+				item.setTags(itemTagsRepo.getTagsOfItem(item.getItem_id()));
+			}
+			oneAuction.setTags(auctionTagsRepo.getTagsOfAuction(auction.getAuction_id()));
+			oneAuction.setItems(items);
+			myauctions.add(oneAuction);
+		}
+		return myauctions;
 	}
 	
 	@RequestMapping(value = "/deleteauction/{user_id}/{auction_id}", method = RequestMethod.GET)

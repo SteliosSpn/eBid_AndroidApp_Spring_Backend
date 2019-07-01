@@ -65,6 +65,7 @@ public class BidsController {
 		new_bid.setBidder_id(bidder_id);
 		bidRepo.save(new_bid);
 		auction.get().setCurrent_bid(bid);
+		auction.get().setHighest_bidder(bidder_id);	//change
 		auctionRepo.save(auction.get());
 		return "Auction bid up";
 		

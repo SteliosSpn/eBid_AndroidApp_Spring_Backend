@@ -16,11 +16,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.eBid.models.AuctionTags;
 import com.eBid.models.Auctions;
 import com.eBid.models.ItemPics;
+import com.eBid.models.ItemTags;
 import com.eBid.models.Items;
 import com.eBid.models.Users;
 import com.eBid.repositories.ItemPicsRepository;
+import com.eBid.repositories.ItemTagsRepository;
 import com.eBid.repositories.ItemsRepository;
 
 @RestController
@@ -32,6 +35,9 @@ public class ItemsController {
 	
 	@Autowired
 	private ItemPicsRepository picsRepo;
+	
+	@Autowired
+	private ItemTagsRepository itemTagsRepo;
 	
 	/*@RequestMapping(value = "/new_item/{name}/{description}/{country}/{latitude}/{longitude}", method = RequestMethod.POST)
 	public String createNewItem(@PathVariable("name") String name,@PathVariable("description") String description,
@@ -101,9 +107,16 @@ public class ItemsController {
 		itemsRepo.save(item);
 		Items returnItem = new Items();
 		returnItem.setItem_id(itemsRepo.lastItemId());
-			
+		if(!item.getTags().isEmpty()){
+			for(String tag:item.getTags()) {
+				ItemTags tags = new ItemTags();
+				tags.setItem_id(itemsRepo.lastItemId());
+				tags.setTag(tag);
+				System.out.println(tags.getTag());
+				itemTagsRepo.save(tags);
+			}
 		
-		
+		}
 		return returnItem;
 	}
 	
