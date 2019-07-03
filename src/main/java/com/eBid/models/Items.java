@@ -71,6 +71,8 @@ public class Items {
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
 	}
+	
+	
 	public List<byte[]> getPictures() {
 		return pictures;
 	}

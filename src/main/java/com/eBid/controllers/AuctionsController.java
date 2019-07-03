@@ -217,6 +217,8 @@ public class AuctionsController {
 		}
 		
 		auctionRepo.deleteById(auction_id);
+		System.out.println(auction_id);
+		System.out.println(currentauction_id);
 		//not needed cascade --change comment this area
 		/*ArrayList<Integer> item_ids=itemsRepo.findauctionitems(auction_id);
 		List<ItemPics> pics=picsRepo.findAll();

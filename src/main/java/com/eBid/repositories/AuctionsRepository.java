@@ -30,7 +30,7 @@ public interface AuctionsRepository extends JpaRepository<Auctions,Integer> {
 	   @Query("SELECT a FROM Auctions a WHERE ends<:time AND checked=FALSE")
 	   public ArrayList<Auctions> findFinishedAuctions(@Param("time") Timestamp time);
 	   
-	   
-	
+	   @Query("SELECT DISTINCT a FROM Auctions a WHERE name LIKE %:name%")
+	   public ArrayList<Auctions> findAuctionsByName(@Param("name") String name);
 	 
 }

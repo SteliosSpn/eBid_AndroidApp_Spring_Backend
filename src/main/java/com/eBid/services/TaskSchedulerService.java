@@ -18,7 +18,7 @@ public class TaskSchedulerService {
 	private AsyncMessageNotificationService asyncmsgservice;
 	@Scheduled(fixedDelay=60000)
 	public void scheduleCompletedAuctionsScan() {
-		    asyncService.checkDB();
+		    //asyncService.checkDB();
 		    
 	}
 	//changes

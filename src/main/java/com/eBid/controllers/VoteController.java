@@ -33,13 +33,13 @@ public class VoteController {
     private BidsRepository bid_repo;
     
 	
-@RequestMapping(value = "/voteseller/{voter_id}/{candidate_id}", method = RequestMethod.POST)
-public String upvote_seller(@PathVariable("voter_id") String voter_id,@PathVariable("candidate_id") String candidate_id){
+@RequestMapping(value = "/voteseller/{voter_id}/{candidate_id}/{type_vote}", method = RequestMethod.POST)
+public String upvote_seller(@PathVariable("voter_id") String voter_id,@PathVariable("candidate_id") String candidate_id ,@PathVariable("type_vote") Boolean type_vote ){
 	Optional<Users> candidate_user=userRepository.findById(candidate_id);
 	Optional<Users> voter_user=userRepository.findById(voter_id);
 	/*get userid  of login*/
-	//System.out.println(candidate_user);
-	//System.out.println(voter_user);
+	System.out.println(candidate_id);
+	System.out.println(voter_id);
 	if((!candidate_user.isPresent())||(!voter_user.isPresent())){
 		return "User(s) are not found";
 	}
@@ -60,19 +60,31 @@ boolean exist=Seller_ratingRepo.existsById(rating);
 	if(exist==true){
 		return "You have already rating this user";
 	}
-	
+	Integer no_votes=candidate_user.get().getSellerVotes();
+	if(no_votes==null){
+		no_votes=0;
+		}
+	if(type_vote==true){
+		no_votes=no_votes+1;
+		
+	}
+	else{
+		no_votes=no_votes-1;
+	}
+	candidate_user.get().setSellerVotes(no_votes);
+	userRepository.save(candidate_user.get());
 	
 	Seller_ratingRepo.save(rating);
 return "0";
 }
 
-@RequestMapping(value = "/votebidder/{voter_id}/{candidate_id}", method = RequestMethod.POST)
-public String upvote_bidder(@PathVariable("voter_id") String voter_id,@PathVariable("candidate_id") String candidate_id){
+@RequestMapping(value = "/votebidder/{voter_id}/{candidate_id}/{type_vote}", method = RequestMethod.POST)
+public String upvote_bidder(@PathVariable("voter_id") String voter_id,@PathVariable("candidate_id") String candidate_id,@PathVariable("type_vote") Boolean type_vote){
 	Optional<Users> candidate_user=userRepository.findById(candidate_id);
 	Optional<Users> voter_user=userRepository.findById(voter_id);
 	/*get userid  of login*/
-	//System.out.println(candidate_user);
-	//System.out.println(voter_user);
+	System.out.println(candidate_id);
+	System.out.println(voter_id);
 	if((!candidate_user.isPresent())||(!voter_user.isPresent())){
 		return "User(s) are not found";
 	}
@@ -93,6 +105,24 @@ boolean exist=Bidder_ratingRepo.existsById(rating);
 	if(exist==true){
 		return "You have already rating this user";
 	}
+	Integer no_votes=candidate_user.get().getBidderVotes();
+	if(no_votes==null){
+		no_votes=0;
+		}
+	if(type_vote==true){
+		no_votes=no_votes+1;
+		
+	}
+	else{
+		no_votes=no_votes-1;
+	}
+	candidate_user.get().setBidderVotes(no_votes);
+	userRepository.save(candidate_user.get());
+	
+	
+	
+	
+	
 	
 	
 	Bidder_ratingRepo.save(rating);

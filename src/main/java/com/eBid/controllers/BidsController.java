@@ -21,10 +21,10 @@ import com.eBid.repositories.BidsRepository;
 public class BidsController {
 	//? transaction
 	@Autowired
-    private BidsRepository bidRepo;
+   private BidsRepository bidRepo;
 	@Autowired
     private AuctionsRepository auctionRepo;
-	@RequestMapping(value = "/make_bid/{auction_id}/{bidder_id}/{bid}", method = RequestMethod.POST)
+	@RequestMapping(value = "/make_bid/{auction_id}/{bidder_id}/{bid}", method = RequestMethod.GET)
     public String createAuction(@PathVariable("auction_id") Integer auction_id,@PathVariable("bidder_id") String bidder_id,
             @PathVariable("bid") Double bid) {
 		//hold biggest
@@ -34,12 +34,22 @@ public class BidsController {
 		}
 		//date?
 		Timestamp start_date=auction.get().getStarts();
-		if(start_date==null){
+		//start_date.setHours(start_date.getHours()-3);
+		boolean check=(start_date).after(new Timestamp(System.currentTimeMillis()-3));
+		System.out.println(new Timestamp(System.currentTimeMillis()));
+		System.out.println(check);	
+		System.out.println(start_date);	
+				 
+		
+		if(check==true){
 			return"This aunction will not start";
 		}
 		Timestamp end_date=auction.get().getEnds();
-		int check=end_date.compareTo(new Timestamp(System.currentTimeMillis()));
-		if (check<=0){
+		//end_date.setHours(end_date.getHours()-3);
+		System.out.println(end_date);
+		 check=end_date.before(start_date);
+		 System.out.println(check);
+		if (check==true){
 			return"Auction has been  completed";
 		}
 		
@@ -69,8 +79,6 @@ public class BidsController {
 		auctionRepo.save(auction.get());
 		return "Auction bid up";
 		
+
 	}
-	
-	
-	
 }
