@@ -79,27 +79,40 @@ public class AuctionsController {
 		return "Auction Successfully Created";
 	}	*/
 	
-	@RequestMapping(value = "/start_auction/{user_id}/{auction_id}/{ends}", method = RequestMethod.POST)
-    public String start_auction(@PathVariable("user_id") String user_id,@PathVariable("auction_id") Integer auction_id,@PathVariable("ends") Timestamp ends){
-		Optional<Auctions> current_auction=auctionRepo.findById(auction_id);
-		if((!current_auction.isPresent())){
-			return "Auction is not found";
-		}
-		
-		Integer currentauction_id=auctionRepo.check_aunction_ownership(user_id, auction_id);
-		Optional<Auctions> current_auction1=auctionRepo.findById(currentauction_id);
-		if((!current_auction1.isPresent())){
-			 return "Auction is not created by you";
-			}
-		int check=ends.compareTo(current_auction1.get().getStarts());
-		if(check<0){
-			return"End date is a timestamp before start date";
-		}
-		current_auction1.get().setEnds(ends);
-		auctionRepo.save(current_auction1.get());
-    	return "Dates are defined";
-    	
-	}
+    @RequestMapping(value = "/start_auction/{user_id}/{auction_id}", method = RequestMethod.GET)
+    public String start_auction(@PathVariable("user_id") String user_id,@PathVariable("auction_id") Integer auction_id){
+    Optional<Auctions> current_auction=auctionRepo.findById(auction_id);
+    if((!current_auction.isPresent())){
+    return "Auction is not found";
+    }
+
+    Integer currentauction_id=auctionRepo.check_aunction_ownership(user_id, auction_id);
+    Optional<Auctions> current_auction1=auctionRepo.findById(currentauction_id);
+    if((!current_auction1.isPresent())){
+    return "Auction is not created by you";
+    }
+
+    Timestamp start_date=current_auction1.get().getStarts();
+    start_date.setHours(start_date.getHours()-3);
+
+
+
+    boolean check= start_date.before(new Timestamp(System.currentTimeMillis()));
+    if(check==true){
+    return"Auction has already started";
+    }
+
+    Timestamp end_date=current_auction1.get().getEnds();
+    check= start_date.after(end_date);
+    if(check==true){
+    return"You have given a start date after end date";
+    }
+
+    current_auction1.get().setStarts(new Timestamp(System.currentTimeMillis()));
+    auctionRepo.save(current_auction1.get());
+    return "Dates are defined";
+
+    }
 	
 	@RequestMapping(value = "/show_activeauctions/{user_id}", method = RequestMethod.GET)
 	 public ArrayList<ShowAuctions> findauctions (@PathVariable("user_id") String user_id){

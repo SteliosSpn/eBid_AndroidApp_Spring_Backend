@@ -2,16 +2,15 @@ package com.eBid.controllers;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import org.jboss.logging.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eBid.models.Auctions;
 import com.eBid.models.Messages;
 import com.eBid.models.Users;
-import com.eBid.repositories.AuctionsRepository;
 import com.eBid.repositories.MessagesRepository;
 import com.eBid.repositories.UserRepository;
 @RestController
@@ -134,6 +133,14 @@ public class MessageController {
 			return"Message is sent";
 		}
 		return"Unavailable communication";
+	}
+	
+	@RequestMapping(value = "/getunreadmessage/{receiver}", method = RequestMethod.GET)
+	public Integer getunreadmessage(@PathVariable("receiver") String receiver){
+	Integer no_unread_messages=message_repo.findunreadmessages(receiver);
+
+
+	return no_unread_messages;
 	}
 	
 }

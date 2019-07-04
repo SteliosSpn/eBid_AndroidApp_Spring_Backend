@@ -34,8 +34,8 @@ public class BidsController {
 		}
 		//date?
 		Timestamp start_date=auction.get().getStarts();
-		//start_date.setHours(start_date.getHours()-3);
-		boolean check=(start_date).after(new Timestamp(System.currentTimeMillis()-3));
+		start_date.setHours(start_date.getHours()-3);
+		boolean check=(start_date).after(new Timestamp(System.currentTimeMillis()));
 		System.out.println(new Timestamp(System.currentTimeMillis()));
 		System.out.println(check);	
 		System.out.println(start_date);	
@@ -45,9 +45,9 @@ public class BidsController {
 			return"This aunction will not start";
 		}
 		Timestamp end_date=auction.get().getEnds();
-		//end_date.setHours(end_date.getHours()-3);
+		end_date.setHours(end_date.getHours()-3);
 		System.out.println(end_date);
-		 check=end_date.before(start_date);
+		 check=end_date.before(new Timestamp(System.currentTimeMillis()));
 		 System.out.println(check);
 		if (check==true){
 			return"Auction has been  completed";
