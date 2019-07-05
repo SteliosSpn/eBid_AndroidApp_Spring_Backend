@@ -77,7 +77,7 @@ public class MessageController {
 				return "Message deleted";
 			}
 			
-			return"Delete of this message terminate communication between users";
+			return"You cannot delete this message";
 			
 	
 	
@@ -102,10 +102,10 @@ public class MessageController {
 					
 					return "Message is read";
 				}
-				return "Message have been read";
+				return "Message has been read";
 			}
 		}
-		return"Message not exist";
+		return"Message doesn't exist";
 	}
 	
 	@RequestMapping(value = "/sendmsg/{sender}/{receiver}/{message}", method = RequestMethod.GET)

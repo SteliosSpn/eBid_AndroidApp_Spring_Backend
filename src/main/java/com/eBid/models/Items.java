@@ -1,5 +1,7 @@
 package com.eBid.models;
 
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -34,7 +36,19 @@ public class Items {
 	private List<String> tags;
 	@Transient
 	private Integer rec_score;
+	@Transient
+	private List<String> pictures_str;
 	
+	public List<String> getPictures_str() {
+		return pictures_str;
+	}
+	public void setPictures_str(List<byte[]> pictures) {
+		String pic_str;
+		this.pictures_str=new ArrayList<String>();
+		for(byte[] picture:pictures){
+		pic_str = Base64.getEncoder().encodeToString(picture);
+		this.pictures_str.add(pic_str);
+		}}
 	public Integer getItem_id() {
 		return item_id;
 	}

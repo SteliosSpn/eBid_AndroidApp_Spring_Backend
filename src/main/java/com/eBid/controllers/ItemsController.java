@@ -39,65 +39,6 @@ public class ItemsController {
 	@Autowired
 	private ItemTagsRepository itemTagsRepo;
 	
-	/*@RequestMapping(value = "/new_item/{name}/{description}/{country}/{latitude}/{longitude}", method = RequestMethod.POST)
-	public String createNewItem(@PathVariable("name") String name,@PathVariable("description") String description,
-			@PathVariable("country") String country,@PathVariable("latitude") Double latitude
-			,@PathVariable("longitude") Double longitude,@RequestParam(value="file")MultipartFile[]files) {
-
-		Items item=new Items();
-		ItemPics picture=new ItemPics();
-		item.setName(name);
-		item.setCountry(country);
-		item.setDescription(description);
-		item.setLatitude(latitude);
-		item.setLongitude(longitude);
-		itemsRepo.save(item);
-		picture.setItem_id(itemsRepo.lastItemId());
-		
-		int i=1;
-		for(MultipartFile file:files)
-		  try {
-                picture.setItem_id_num(i);
-	            byte[] bytes = file.getBytes();
-	            picture.setPicture(bytes);
-	    		picsRepo.save(picture);
-                i++;
-
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	            return "Error with images";
-	        }
-		
-		
-		
-		return "Item Created";
-	}	*/
-	/*
-	@RequestMapping(value = "/create_item", method = RequestMethod.POST)
-	public String createNewItem(@RequestBody Items item,@RequestParam(value="file")MultipartFile[]files) {
-
-		ItemPics picture=new ItemPics();
-		itemsRepo.save(item);
-		picture.setItem_id(itemsRepo.lastItemId());
-		
-		int i=1;
-		for(MultipartFile file:files)
-		  try {
-                picture.setItem_id_num(i);
-	            byte[] bytes = file.getBytes();
-	            picture.setPicture(bytes);
-	    		picsRepo.save(picture);
-                i++;
-
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	            return "Error with images";
-	        }
-		
-		
-		
-		return "Item Created";
-	}*/
 	
 	@RequestMapping(value = "/create_item", headers = {
     "content-type=application/json" },consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
@@ -112,7 +53,6 @@ public class ItemsController {
 				ItemTags tags = new ItemTags();
 				tags.setItem_id(itemsRepo.lastItemId());
 				tags.setTag(tag);
-				System.out.println(tags.getTag());
 				itemTagsRepo.save(tags);
 			}
 		
@@ -150,14 +90,7 @@ public class ItemsController {
     List <byte[]> pictureslist = picsRepo.findByItemId(item_id);
 		return pictureslist.get(pic_num-1);
 	}	
-	/*
-	@RequestMapping(value = "/get_item_details/{item_id}", method = RequestMethod.GET)
-	public  Items getItem(@PathVariable("item_id") Integer item_id) {
-		Optional <Items> opt = itemsRepo.findById(item_id);
-		Items item_details = new Items();
-		if (opt.isPresent())item_details=opt.get();
-		return item_details;
-	}	*/
+
 	
 	@RequestMapping(value = "/get_item_pic_count/{item_id}", method = RequestMethod.GET)
 	public  Integer getItemPicCount(@PathVariable("item_id") Integer item_id) {

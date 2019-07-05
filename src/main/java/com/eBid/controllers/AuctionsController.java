@@ -51,33 +51,7 @@ public class AuctionsController {
     @Autowired
     private ItemTagsRepository itemTagsRepo;
     
-	/*
-    @RequestMapping(value = "/create_auction/{user_id}/{start_bid}/{starts}/{ends}/{items}/{tags}", method = RequestMethod.POST)
-	public String createAuction(@PathVariable("user_id") String user_id,@PathVariable("start_bid") Double start_bid,
-			@PathVariable("starts") Timestamp starts,@PathVariable("ends") Timestamp ends,
-			@PathVariable("items") List<Integer> items,@PathVariable("tags")List <String>tags) {
 
-		Auctions auction = new Auctions();
-		auction.setAuctioneer(user_id);
-		auction.setStart_bid(start_bid);
-		auction.setCurrent_bid(0.0);
-		auction.setStarts(starts);
-		auction.setEnds(ends);
-		auctionRepo.save(auction);
-		for(Integer item:items) {
-			AuctionDetails aucDetails = new AuctionDetails();
-			aucDetails.setAuction_id(auctionRepo.lastAuctionId());
-			aucDetails.setItem_id(item);
-			auctionDetRepo.save(aucDetails);
-		}
-		for(String tag:tags) {
-			AuctionTags auctionTag= new AuctionTags();
-			auctionTag.setAuction_id(auctionRepo.lastAuctionId());
-			auctionTag.setTag(tag);
-			auctionTagsRepo.save(auctionTag);
-		}
-		return "Auction Successfully Created";
-	}	*/
 	
     @RequestMapping(value = "/start_auction/{user_id}/{auction_id}", method = RequestMethod.GET)
     public String start_auction(@PathVariable("user_id") String user_id,@PathVariable("auction_id") Integer auction_id){
@@ -89,7 +63,7 @@ public class AuctionsController {
     Integer currentauction_id=auctionRepo.check_aunction_ownership(user_id, auction_id);
     Optional<Auctions> current_auction1=auctionRepo.findById(currentauction_id);
     if((!current_auction1.isPresent())){
-    return "Auction is not created by you";
+    return "This auction was not created by you";
     }
 
     Timestamp start_date=current_auction1.get().getStarts();
@@ -105,12 +79,12 @@ public class AuctionsController {
     Timestamp end_date=current_auction1.get().getEnds();
     check= start_date.after(end_date);
     if(check==true){
-    return"You have given a start date after end date";
+    return"The start date you have entered is  after the end date";
     }
 
     current_auction1.get().setStarts(new Timestamp(System.currentTimeMillis()));
     auctionRepo.save(current_auction1.get());
-    return "Dates are defined";
+    return "Auction started successfully!";
 
     }
 	
@@ -146,8 +120,6 @@ public class AuctionsController {
 	public Auctions createAuction(@RequestBody Auctions auction) {
 		auction.setCurrent_bid(0.0);
 		auction.setChecked(false);
-		//auction.setHighest_bidder("kostas");
-		//auction.setEnds(new Timestamp(System.currentTimeMillis()));
 		auctionRepo.save(auction);
 		if(auction.getTags().isEmpty()){}
 		else {
@@ -162,20 +134,7 @@ public class AuctionsController {
 	    returnAuction.setAuction_id(auctionRepo.lastAuctionId());
 		return returnAuction;
 	}
-	/*
-	@RequestMapping(value = "/create_auction_tags",headers = {
-    "content-type=application/json" },consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-	public String createAuctionTags(@RequestBody List<AuctionTags> tags) {
-		AuctionTags auctiontags=new AuctionTags();
-		auctiontags.setAuction_id(auctionRepo.lastAuctionId());
-		for(AuctionTags tag:tags) {
-			auctiontags.setTag(tag.getTag());
-			System.out.println(auctiontags.getTag());
-			//auctionTagsRepo.save(auctiontags);
-		}
-		
-		return "Success";
-	}*/
+
 	
 	@RequestMapping(value = "/my_auctions/{user_id}", method = RequestMethod.GET)
 	public ArrayList<MyAuctions> getMyAuctions(@PathVariable("user_id") String user_id){
@@ -206,6 +165,8 @@ public class AuctionsController {
 				if(opt.isPresent())items.add(opt.get());
 			}
 			for(Items item:items) {
+				List<byte[]> pictures=picsRepo.findByItemId(item.getItem_id());
+				item.setPictures_str(pictures);
 				item.setPictures(picsRepo.findByItemId(item.getItem_id()));
 				item.setTags(itemTagsRepo.getTagsOfItem(item.getItem_id()));
 			}
@@ -221,38 +182,18 @@ public class AuctionsController {
 		Integer currentauction_id=auctionRepo.check_aunction_ownership(user_id, auction_id);
 		Optional<Auctions> current_auction1=auctionRepo.findById(currentauction_id);
 		if((!current_auction1.isPresent())){
-			 return "Auction is not created by you";
+			 return "This auction is not created by you";
 			}
 		Double current_bid=current_auction1.get().getCurrent_bid();
 		
 		if(current_bid!=0){
-			return"Bids have already submitted- Auction cannot be deleted";
+			return"Bids have already been submitted - Auction cannot be deleted";
 		}
 		
 		auctionRepo.deleteById(auction_id);
 		System.out.println(auction_id);
 		System.out.println(currentauction_id);
-		//not needed cascade --change comment this area
-		/*ArrayList<Integer> item_ids=itemsRepo.findauctionitems(auction_id);
-		List<ItemPics> pics=picsRepo.findAll();
-		
-		for(Integer id:item_ids){
-			Optional<Items> item=itemsRepo.findById(id);
-			if((item.isPresent())){
-				itemsRepo.deleteById(id);
-				//this area not exist  previously
-				for(ItemPics pic:pics){
-					if(pic.getItem_id()==id){
-						picsRepo.delete(pic);
-					}
-				}
-				 /*ArrayList<Integer> pic_ids=picsRepo.findrecordByItemId(id);
-				 for(Integer pic_id:pic_ids){
-					 picsRepo.deleteById(id,pic_id);
-				// }
-			}
-			
-		}*/
+	
 		return"Record delete";
 	}
 	

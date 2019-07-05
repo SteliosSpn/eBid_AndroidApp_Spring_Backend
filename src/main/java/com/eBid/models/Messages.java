@@ -56,11 +56,7 @@ public class Messages {
 	public void setIs_read(boolean is_read) {
 		this.is_read = is_read;
 	}
-	@Override
-	public String toString() {
-		return "Messages [message_id=" + message_id + ", sender=" + sender + ", receiver=" + receiver + ", message="
-				+ message + ", deleted=" + deleted + ", is_read=" + is_read + "]";
-	}
+	
 	
 	
 }

@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eBid.models.Auctions;
+import com.eBid.models.ItemPics;
 import com.eBid.models.Items;
 import com.eBid.models.Log;
 import com.eBid.models.MyAuctions;
 import com.eBid.repositories.AuctionTagsRepository;
 import com.eBid.repositories.AuctionsRepository;
 import com.eBid.repositories.BidsRepository;
+import com.eBid.repositories.ItemPicsRepository;
 import com.eBid.repositories.ItemTagsRepository;
 import com.eBid.repositories.ItemsRepository;
 import com.eBid.repositories.LogRepository;
@@ -44,6 +46,9 @@ public class RecommendationsController {
 	
 	@Autowired
 	private LogRepository logRepo;
+	
+	@Autowired
+	private ItemPicsRepository picsRepo;
 
 	@RequestMapping(value = "/get_rec/{user_id}", method = RequestMethod.GET)
 		public List<Items> getItemRec(@PathVariable("user_id") String user_id){
@@ -54,11 +59,11 @@ public class RecommendationsController {
 		HashMap<String,Integer> tagsmap=new HashMap<String,Integer>();
 		if(!my_auction_ids.isEmpty()) {
 			for(Integer auction:my_auction_ids) {
-				//System.out.println(auction);
+			
 				ArrayList<String> auctiontags=new ArrayList<>();
 				auctiontags=auctionTagsRepo.getTagsOfAuction(auction);
 				for(String tag:auctiontags) {
-					//System.out.println(tag);
+				
 					
 					if(tagsmap.get(tag)==null)tagsmap.put(tag, 1);
 					else {
@@ -69,6 +74,9 @@ public class RecommendationsController {
 			}
 			items=itemsRepo.findAll();
 			for(Items item:items) {
+				List<byte[]> pictures=picsRepo.findByItemId(item.getItem_id());
+				item.setPictures_str(pictures);
+				item.setPictures(picsRepo.findByItemId(item.getItem_id()));
 				item.setTags(itemTagsRepo.getTagsOfItem(item.getItem_id()));
 				item.setRec_score(0);
 				for(String tag:item.getTags()) {
@@ -92,7 +100,7 @@ public class RecommendationsController {
 					ArrayList<String> auctiontags=new ArrayList<>();
 					auctiontags=auctionTagsRepo.getTagsOfAuction(visited_auction.getAuction_id());
 					for(String tag:auctiontags) {
-						//System.out.println(tag);
+						
 						
 						if(tagsmap.get(tag)==null)tagsmap.put(tag, 1);
 						else {
@@ -105,6 +113,9 @@ public class RecommendationsController {
 				}
 				items=itemsRepo.findAll();
 				for(Items item:items) {
+					List<byte[]> pictures=picsRepo.findByItemId(item.getItem_id());
+					item.setPictures_str(pictures);
+					item.setPictures(picsRepo.findByItemId(item.getItem_id()));
 					item.setTags(itemTagsRepo.getTagsOfItem(item.getItem_id()));
 					item.setRec_score(0);
 					for(String tag:item.getTags()) {
@@ -131,7 +142,7 @@ public class RecommendationsController {
 	@RequestMapping(value = "/get_auction/{auction_id}", method = RequestMethod.GET)
 	public ArrayList<MyAuctions> getMyAuctions(@PathVariable("auction_id") Integer auction_id){
 		ArrayList<Auctions> auctions=new ArrayList<>();
-		//ArrayList <Integer> auctions_ids=auctionRepo.findMyAuctions(user_id);
+
 		
 			Optional <Auctions> opt=auctionRepo.findById(auction_id);
 			if(opt.isPresent()) {
@@ -139,7 +150,6 @@ public class RecommendationsController {
 			}
 		
 		ArrayList<MyAuctions> myauctions=new ArrayList<>();
-		//auctions.addAll(auctionRepo.findMyAuctions(user_id));
 		for(Auctions auction:auctions) {
             MyAuctions oneAuction=new MyAuctions();
             oneAuction.setAuction_id(auction.getAuction_id());
@@ -154,10 +164,13 @@ public class RecommendationsController {
 			ArrayList <Integer> items_id = itemsRepo.findItemsOfAuction(auction.getAuction_id());
 			for(Integer item:items_id) {
 				Optional <Items> opt1 = itemsRepo.findById(item);
-				if(opt.isPresent())items.add(opt1.get());
+				if(opt.isPresent()) items.add(opt1.get());
+				
 			}
 			for(Items item:items) {
-				//item.setPictures(picsRepo.findByItemId(item.getItem_id()));
+				List<byte[]> pictures=picsRepo.findByItemId(item.getItem_id());
+				item.setPictures_str(pictures);
+				item.setPictures(picsRepo.findByItemId(item.getItem_id()));
 				item.setTags(itemTagsRepo.getTagsOfItem(item.getItem_id()));
 			}
 			oneAuction.setTags(auctionTagsRepo.getTagsOfAuction(auction.getAuction_id()));

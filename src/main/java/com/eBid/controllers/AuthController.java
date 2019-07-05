@@ -53,14 +53,6 @@ public class AuthController {
     private UserService userDetailsServiceImpl;
 
 
-	@GetMapping("/b")
-    public Users findIncidents() {
-        System.out.println("Alex");
-        Users user=new Users();
-        user.setUser_id("KOSTAMALAKA");
-        return user;
-    }
-
 	
     @RequestMapping(value = "/register",headers = {
     "content-type=application/json" },consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
@@ -70,7 +62,6 @@ public class AuthController {
     	
 		
 		if (userDetailsServiceImpl.isUserPresent(user.getUser_id())) {
-            //user.setUserId(null);
             return "Unsuccessful Registration.The username you entered is already used.";
         }
 		
@@ -90,7 +81,6 @@ public class AuthController {
     public void authWithAuthManager(HttpServletRequest request, String user_id, String password) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user_id, password);
         authToken.setDetails(new WebAuthenticationDetails(request));
-        //System.out.println(authToken.getPrincipal().toString());
         Authentication authentication = authenticationManager.authenticate(authToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         
@@ -99,8 +89,6 @@ public class AuthController {
     @RequestMapping(value = "/login/{user_id}/{password}",method = RequestMethod.GET)
     public Users login(HttpServletRequest request,@PathVariable("user_id") String user_id,@PathVariable("password")String password) {
     	authWithAuthManager(request,user_id, password);
-		//user.setRoles("USER")45;
-    	System.out.println("success");
     	Users user= new Users();
     	user.setUser_id(user_id);
     	return user;

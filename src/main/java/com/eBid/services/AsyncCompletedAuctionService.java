@@ -41,7 +41,6 @@ public class AsyncCompletedAuctionService {
 				message.setReceiver(auction.getAuctioneer());
 				message.setSender(auction.getHighest_bidder());
 				message.setMessage("You became friends with "+auction.getHighest_bidder());
-				//System.out.println(message.toString());
 				messagesRepo.save(message);
 				
 				Messages message2=new Messages();
@@ -50,7 +49,6 @@ public class AsyncCompletedAuctionService {
 				message2.setReceiver(auction.getHighest_bidder());
 				message2.setSender(auction.getAuctioneer());
 				message2.setMessage("You became friends with "+auction.getAuctioneer());
-				//System.out.println(message2.toString());
 				messagesRepo.save(message2);
 				
 				}

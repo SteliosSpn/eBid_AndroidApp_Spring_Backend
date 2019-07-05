@@ -2,6 +2,7 @@ package com.eBid.controllers;
 
 import org.springframework.http.MediaType;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,14 +47,14 @@ public class SearchController {
 	public ArrayList<MyAuctions> search(@PathVariable("word") String word){
 		ArrayList<Auctions> auctions=new ArrayList<Auctions>();
 		ArrayList <Integer> auctions_ids=auctiontagsrepo.getauctionsbytag(word);
-		//ArrayList <Integer> auctions_ids=auction_repo.findMyAuctions(user_id);
+
 		for(Integer auction:auctions_ids) {
 			Optional <Auctions> opt=auction_repo.findById(auction);
 			if(opt.isPresent()) {
 				auctions.add(opt.get());
 			}
 		}
-		//String lower_name=word.toLowerCase();
+		
 		ArrayList<Auctions> auctions1=new ArrayList<Auctions>();
 		auctions1=auction_repo.findAuctionsByName(word);
 		auctions.addAll(auctions1);
@@ -71,7 +72,6 @@ public class SearchController {
 			}
 		}
 		ArrayList<MyAuctions> myauctions=new ArrayList<>();
-		//auctions.addAll(auctionRepo.findMyAuctions(user_id));
 		for(Auctions auction:auctions) {
             MyAuctions oneAuction=new MyAuctions();
             oneAuction.setAuction_id(auction.getAuction_id());
@@ -89,6 +89,8 @@ public class SearchController {
 				if(opt.isPresent())items.add(opt.get());
 			}
 			for(Items item:items) {
+				List<byte[]> pictures=picsRepo.findByItemId(item.getItem_id());
+				item.setPictures_str(pictures);
 				item.setPictures(picsRepo.findByItemId(item.getItem_id()));
 				item.setTags(itemTagsRepo.getTagsOfItem(item.getItem_id()));
 			}
@@ -129,7 +131,6 @@ public class SearchController {
 		if(!loglist.isEmpty()) {
 			for(Integer visit_count:loglist) {
 				log.setVisit_count(visit_count+1);
-				System.out.println(log.getVisit_count());
 				logRepo.customdelete(log.getUser_id(),log.getAuction_id());
 				logRepo.save(log);
 			}
@@ -142,121 +143,4 @@ public class SearchController {
       return log;
 	}
 
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*
-	@RequestMapping(value = "/searchbytag/{tag}", method = RequestMethod.GET)
-	public ArrayList<MyAuctions> searchauctionsbytag(@PathVariable("tag") String tag){
-		ArrayList<Auctions> auctions=new ArrayList<Auctions>();
-		ArrayList <Integer> auctions_ids=auctiontagsrepo.getauctionsbytag(tag);
-		//ArrayList <Integer> auctions_ids=auction_repo.findMyAuctions(user_id);
-		for(Integer auction:auctions_ids) {
-			Optional <Auctions> opt=auction_repo.findById(auction);
-			if(opt.isPresent()) {
-				auctions.add(opt.get());
-			}
-		}
-		ArrayList<MyAuctions> myauctions=new ArrayList<>();
-		//auctions.addAll(auctionRepo.findMyAuctions(user_id));
-		for(Auctions auction:auctions) {
-            MyAuctions oneAuction=new MyAuctions();
-            oneAuction.setAuction_id(auction.getAuction_id());
-            oneAuction.setName(auction.getName());
-            oneAuction.setStarts(auction.getStarts());
-            oneAuction.setEnds(auction.getEnds());
-            oneAuction.setAuctioneer(auction.getAuctioneer());
-            oneAuction.setStart_bid(auction.getStart_bid());
-            oneAuction.setCurrent_bid(auction.getCurrent_bid());
-            oneAuction.setHighest_bidder(auction.getHighest_bidder());
-			ArrayList <Items> items = new ArrayList<>();
-			ArrayList <Integer> items_id = itemsRepo.findItemsOfAuction(auction.getAuction_id());
-			for(Integer item:items_id) {
-				Optional <Items> opt = itemsRepo.findById(item);
-				if(opt.isPresent())items.add(opt.get());
-			}
-			for(Items item:items) {
-				item.setPictures(picsRepo.findByItemId(item.getItem_id()));
-				item.setTags(itemTagsRepo.getTagsOfItem(item.getItem_id()));
-			}
-			oneAuction.setTags(auctiontagsrepo.getTagsOfAuction(auction.getAuction_id()));
-			oneAuction.setItems(items);
-			myauctions.add(oneAuction);
-		}
-		return myauctions;
-
-		
-	}
-	
-	
-	@RequestMapping(value = "/searchbytagdescription/{tag}/{name}", method = RequestMethod.GET)
-	public ArrayList<MyAuctions> searchauctionsbytagdescription(@PathVariable("tag") String tag,@PathVariable("name") String name){
-		ArrayList<Auctions> auctions=new ArrayList();
-		ArrayList<MyAuctions> myauctions=new ArrayList<>();
-		ArrayList<Integer> auction_ids=auctiontagsrepo.getauctionsbytag(tag);
-		String description,lower_name;
-		for(Integer auction_id:auction_ids){
-			Optional<Auctions> auction=auction_repo.findById(auction_id);
-			
-			
-			
-			if(auction.isPresent()){
-				description=(auction.get().getName()).toLowerCase();
-				lower_name=name.toLowerCase();
-				if(description.contains(lower_name)){
-					
-					
-					
-					
-					
-					
-					auctions.add(auction.get());
-				}
-				
-				
-			}
-		}
-		for(Auctions auction:auctions) {
-            MyAuctions oneAuction=new MyAuctions();
-            oneAuction.setAuction_id(auction.getAuction_id());
-            oneAuction.setName(auction.getName());
-            oneAuction.setStarts(auction.getStarts());
-            oneAuction.setEnds(auction.getEnds());
-            oneAuction.setAuctioneer(auction.getAuctioneer());
-            oneAuction.setStart_bid(auction.getStart_bid());
-            oneAuction.setCurrent_bid(auction.getCurrent_bid());
-            oneAuction.setHighest_bidder(auction.getHighest_bidder());
-			ArrayList <Items> items = new ArrayList<>();
-			ArrayList <Integer> items_id = itemsRepo.findItemsOfAuction(auction.getAuction_id());
-			for(Integer item:items_id) {
-				Optional <Items> opt = itemsRepo.findById(item);
-				if(opt.isPresent())items.add(opt.get());
-			}
-			for(Items item:items) {
-				item.setPictures(picsRepo.findByItemId(item.getItem_id()));
-				item.setTags(itemTagsRepo.getTagsOfItem(item.getItem_id()));
-			}
-			oneAuction.setTags(auctiontagsrepo.getTagsOfAuction(auction.getAuction_id()));
-			oneAuction.setItems(items);
-			myauctions.add(oneAuction);
-		}
-		
-		
-		
-		return myauctions;
-	}
-	
-	
-	
-	*/
-	
 }

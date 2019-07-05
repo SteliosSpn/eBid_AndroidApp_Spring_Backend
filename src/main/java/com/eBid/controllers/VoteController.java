@@ -37,14 +37,12 @@ public class VoteController {
 public String upvote_seller(@PathVariable("voter_id") String voter_id,@PathVariable("candidate_id") String candidate_id ,@PathVariable("type_vote") Boolean type_vote ){
 	Optional<Users> candidate_user=userRepository.findById(candidate_id);
 	Optional<Users> voter_user=userRepository.findById(voter_id);
-	/*get userid  of login*/
-	System.out.println(candidate_id);
-	System.out.println(voter_id);
+
 	if((!candidate_user.isPresent())||(!voter_user.isPresent())){
-		return "User(s) are not found";
+		return "User(s) not found";
 	}
 	if(voter_id.equals(candidate_id)){
-		return "A  seller cannot upvote yourself";
+		return "You cannot upvote yourself!";
 	}
 	
 	Integer count=auction_repo.findauctionuser(candidate_id);
@@ -58,7 +56,7 @@ public String upvote_seller(@PathVariable("voter_id") String voter_id,@PathVaria
 	rating.setCandidate_id(candidate_id);
 boolean exist=Seller_ratingRepo.existsById(rating);
 	if(exist==true){
-		return "You have already rating this user";
+		return "You have already rated this user";
 	}
 	Integer no_votes=candidate_user.get().getSellerVotes();
 	if(no_votes==null){
@@ -82,14 +80,13 @@ return "0";
 public String upvote_bidder(@PathVariable("voter_id") String voter_id,@PathVariable("candidate_id") String candidate_id,@PathVariable("type_vote") Boolean type_vote){
 	Optional<Users> candidate_user=userRepository.findById(candidate_id);
 	Optional<Users> voter_user=userRepository.findById(voter_id);
-	/*get userid  of login*/
-	System.out.println(candidate_id);
-	System.out.println(voter_id);
+
+
 	if((!candidate_user.isPresent())||(!voter_user.isPresent())){
-		return "User(s) are not found";
+		return "User(s) not found";
 	}
 	if(voter_id.equals(candidate_id)){
-		return "A  bidder cannot upvote yourself";
+		return "You cannot upvote yourself!";
 	}
 	
 	Integer count=bid_repo.findbiduser(candidate_id);
@@ -103,7 +100,7 @@ public String upvote_bidder(@PathVariable("voter_id") String voter_id,@PathVaria
 	rating.setCandidate_id(candidate_id);
 boolean exist=Bidder_ratingRepo.existsById(rating);
 	if(exist==true){
-		return "You have already rating this user";
+		return "You have already rated this user";
 	}
 	Integer no_votes=candidate_user.get().getBidderVotes();
 	if(no_votes==null){
